@@ -21,16 +21,16 @@ This is the first step towards building your first full web application: the Air
 .Airbnb ORM
 .Airbnb API
 .Final product
-#Other resource
-.cmd module
-.packages concept page
-.Python packages
-.uuid module
-.datetime
-. unittest module
-. args/kwargs
-. Python test cheatsheet
-AirBnB website.
+  # Other resource#
+. cmd module
+. packages concept page
+. Python packages
+. uuid module
+  datetime
+  unittest module
+  args/kwargs
+  Python test cheatsheet
+  AirBnB website.
 
 # Aims & Objectives of this project
 This will help to be able to manage the objects of our project:
