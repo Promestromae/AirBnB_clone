@@ -1,24 +1,24 @@
 #!/usr/bin/python3
-
 from models.base_model import BaseModel
+""" Module for class Place """
 
 
 class Place(BaseModel):
     """
-    Place class that inherits from BaseModel.
+    Class Place that imports from BaseModel
 
     Attributes:
-        city_id (str): The ID of the City to which the Place belongs.
-        user_id (str): The ID of the User who owns the Place.
-        name (str): The name of the Place.
-        description (str): A description of the Place.
-        number_rooms (int): The number of rooms in the Place.
-        number_bathrooms (int): The number of bathrooms in the Place.
-        max_guest (int): The max num of guests the Place can accommodate.`
-        price_by_night (int): The price of the Place per night.
-        latitude (float): The latitude coordinates of the Place's location.
-        longitude (float): The longitude coordinates of the Place's location.
-        amenity_ids (list): A list of Amenity IDs associated with the Place.
+    city_id: string - City id
+    user_id: string - User id
+    name: name of Place
+    description: description of Place
+    number_rooms: number of rooms in Place
+    number_bathrooms: number of bathrooms in Place
+    max_guest: maximum number of guests in Place
+    price_by_night: price by night of Place
+    latitude: latitude of Place
+    longitude: longitude of Place
+    amenity_ids: Amenity id
     """
     city_id = ""
     user_id = ""

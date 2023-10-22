@@ -1,16 +1,15 @@
 #!/usr/bin/python3
-
+"""
+Module Review class
+"""
 from models.base_model import BaseModel
 
 
 class Review(BaseModel):
     """
-    Review class that inherits from BaseModel.
-
-    Attributes:
-        place_id (str): The ID of the associated Place.
-        user_id (str): The ID of the associated User.
-        text (str): The text content of the review.
+    place_id:empty string
+    user_id: empty string
+    text: empty string
     """
     place_id = ""
     user_id = ""
