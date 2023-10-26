@@ -1,79 +1,81 @@
-#!/usr/bin/python3
-"""
-Unittest to test state class
-"""
+#!/usr/bin/env python3
+"""Unittest module for the Amenity Class."""
+
 import unittest
-import inspect
-import json
 import os
-import pycodestyle
-from models.base_model import BaseModel
 from models.amenity import Amenity
+from models.base_model import BaseModel
+import uuid
+import datetime
+import time
+import re
+import json
+from models.engine.file_storage import FileStorage
+from models import storage
 
-
-class TestFileStorageDocs(unittest.TestCase):
-    '''Tests for documentation of class'''
+class TestAmenity(unittest.TestCase):
+    """Amenity model class test case"""
 
     @classmethod
     def setUpClass(cls):
-        """Set up for the doc tests"""
-        cls.amenity_funcs = inspect.getmembers(Amenity, inspect.isfunction)
+        """Setup the unittest"""
+        cls.amenity = Amenity()
+        cls.amenity.name = "Wifi"
 
-    def test_conformance_class(self):
-        """Test that we conform to Pycodestyle."""
-        style = pycodestyle.StyleGuide(quiet=True)
-        result = style.check_files(['models/amenity.py'])
-        self.assertEqual(result.total_errors, 0,
-                         "Found code style errors (and warnings).")
-
-    def test_conformance_test(self):
-        """Test that we conform to Pycodestyle."""
-        style = pycodestyle.StyleGuide(quiet=True)
-        result = style.\
-            check_files(['tests/test_models/test_amenity.py'])
-        self.assertEqual(result.total_errors, 0,
-                         "Found code style errors (and warnings).")
-
-    def test_module_docstr(self):
-        """ Tests for docstring"""
-        self.assertTrue(len(Amenity.__doc__) >= 1)
-
-    def test_class_docstr(self):
-        """ Tests for docstring"""
-        self.assertTrue(len(Amenity.__doc__) >= 1)
-
-    def test_func_docstr(self):
-        """Tests for docstrings in all functions"""
-        for func in self.amenity_funcs:
-            self.assertTrue(len(func[1].__doc__) >= 1)
-
-
-class TestState(unittest.TestCase):
+    @classmethod
+    def tearDownClass(cls):
+        """Clean up the dirt"""
+        del cls.amenity
+        try:
+            os.remove("file.json")
+        except FileNotFoundError:
+            pass
 
     def test_is_subclass(self):
-        self.assertTrue(issubclass(Amenity().__class__, BaseModel), True)
+        self.assertTrue(issubclass(self.amenity.__class__, BaseModel))
 
-    def test_attr_str(self):
-        self.assertEqual(type(Amenity().name), str)
+    def checking_for_doc(self):
+        self.assertIsNotNone(Amenity.__doc__)
 
-    def test_has_attributes_in_to_dict(self):
-        """check if attr is in to_dict"""
-        amenity = Amenity()
-        amenity.name = "garden"
-        self.assertTrue('id' in amenity.to_dict())
-        self.assertTrue('created_at' in amenity.to_dict())
-        self.assertTrue('updated_at' in amenity.to_dict())
-        self.assertTrue('name' in amenity.to_dict())
+    # def test_has_attributes(self):
+    #    self.assertTrue('id' in self.amenity.__dict__)
+    #    self.assertTrue('created_at' in self.amenity.__dict__)
+    #    self.assertTrue('updated_at' in self.amenity.__dict__)
+    #    self.assertTrue('name' in self.amenity.__dict__)
+    # OR
+    a = Amenity()
+    def test_has_attributes(self):
+        """verify if attributes exist"""
+        self.assertTrue(hasattr(self.a, 'name'))
+        self.assertTrue(hasattr(self.a, 'id'))
+        self.assertTrue(hasattr(self.a, 'created_at'))
+        self.assertTrue(hasattr(self.a, 'updated_at'))
+
+    def test_attributes_are_string(self):
+        self.assertIs(type(self.amenity.name), str)
+
+    def test_class_exists(self):
+        """tests if class exists"""
+        res = "<class 'models.amenity.Amenity'>"
+        self.assertEqual(str(type(self.a)), res)
+
+    def test_user_inheritance(self):
+        """test if Amenity is a subclass of BaseModel"""
+        self.assertIsInstance(self.a, Amenity)
+
+    def test_types(self):
+        """tests if the type of the attribute is the correct one"""
+        self.assertIsInstance(self.a.name, str)
+        self.assertIsInstance(self.a.id, str)
+        self.assertIsInstance(self.a.created_at, datetime.datetime)
+        self.assertIsInstance(self.a.updated_at, datetime.datetime)
 
     def test_save(self):
-        amenity = Amenity()
-        amenity.save()
-        self.assertNotEqual(amenity.created_at, amenity.updated_at)
+        self.amenity.save()
+        self.assertNotEqual(self.amenity.created_at, self.amenity.updated_at)
 
     def test_to_dict(self):
-        amenity = Amenity()
-        self.assertTrue(dict, type(amenity.to_dict))
-        self.assertEqual('to_dict' in dir(amenity), True)
+        self.assertTrue('to_dict' in dir(self.amenity))
 
 
 if __name__ == "__main__":

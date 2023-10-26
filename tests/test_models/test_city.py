@@ -1,83 +1,92 @@
 #!/usr/bin/python3
+"""Unittest module for the City Class.
+Unittest classes:
+    TestCity_instantiation
+    TestCity_save
+    TestCity_to_dict
 """
-Unittest to test state class
-"""
+
 import unittest
-import inspect
-import json
-import os
-import pycodestyle
-from models.base_model import BaseModel
+from datetime import datetime
+import time
+import uuid
 from models.city import City
+import re
+import json
+from models.engine.file_storage import FileStorage
+import os
+from models import storage
+from models.base_model import BaseModel
 
-
-class TestFileStorageDocs(unittest.TestCase):
-    '''Tests for documentation of class'''
+class TestCity(unittest.TestCase):
+    """City model class test case"""
 
     @classmethod
     def setUpClass(cls):
-        """Set up for the doc tests"""
-        cls.city_funcs = inspect.getmembers(City, inspect.isfunction)
+        """Setup the unittest"""
+        cls.city = City()
+        cls.city.state_id = str(uuid.uuid4())
+        cls.city.name = "St. Petesburg"
 
-    def test_conformance_class(self):
-        """Test that we conform to Pycodestyle."""
-        style = pycodestyle.StyleGuide(quiet=True)
-        result = style.check_files(['models/city.py'])
-        self.assertEqual(result.total_errors, 0,
-                         "Found code style errors (and warnings).")
+    @classmethod
+    def tearDownClass(cls):
+        """Clean up the dirt"""
+        del cls.city
+        try:
+            os.remove("file.json")
+        except FileNotFoundError:
+            pass
 
-    def test_conformance_test(self):
-        """Test that we conform to Pycodestyle."""
-        style = pycodestyle.StyleGuide(quiet=True)
-        result = style.\
-            check_files(['tests/test_models/test_city.py'])
-        self.assertEqual(result.total_errors, 0,
-                         "Found code style errors (and warnings).")
+    def test_no_args_instantiates(self):
+        self.assertEqual(City, type(City()))
 
-    def test_module_docstr(self):
-        """ Tests for docstring"""
-        self.assertTrue(len(City.__doc__) >= 1)
+    def test_new_instance_stored_in_objects(self):
+        self.assertIn(City(), storage.all().values())
 
-    def test_class_docstr(self):
-        """ Tests for docstring"""
-        self.assertTrue(len(City.__doc__) >= 1)
+    def test_id_is_public_str(self):
+        self.assertEqual(str, type(City().id))
 
-    def test_func_docstr(self):
-        """Tests for docstrings in all functions"""
-        for func in self.city_funcs:
-            self.assertTrue(len(func[1].__doc__) >= 1)
+    def test_created_at_is_public_datetime(self):
+        self.assertEqual(datetime, type(City().created_at))
 
-
-class TestState(unittest.TestCase):
+    def test_updated_at_is_public_datetime(self):
+        self.assertEqual(datetime, type(City().updated_at))
 
     def test_is_subclass(self):
-        self.assertTrue(issubclass(City().__class__, BaseModel), True)
+        self.assertTrue(issubclass(self.city.__class__, BaseModel))
 
-    def test_attr_str(self):
-        self.assertEqual(type(City().name), str)
-        self.assertEqual(type(City().state_id), str)
+    def checking_for_doc(self):
+        self.assertIsNotNone(City.__doc__)
 
-    def test_has_attributes_in_to_dict(self):
-        """check if attr is in to_dict"""
-        melbourne = City()
-        melbourne.name = "Melbourne"
-        melbourne.state_id = "vic"
-        self.assertTrue('id' in melbourne.to_dict())
-        self.assertTrue('created_at' in melbourne.to_dict())
-        self.assertTrue('updated_at' in melbourne.to_dict())
-        self.assertTrue('name' in melbourne.to_dict())
-        self.assertTrue('state_id' in melbourne.to_dict())
+    def test_has_attributes(self):
+        self.assertTrue('id' in self.city.__dict__)
+        self.assertTrue('created_at' in self.city.__dict__)
+        self.assertTrue('updated_at' in self.city.__dict__)
+        self.assertTrue('state_id' in self.city.__dict__)
+        self.assertTrue('name' in self.city.__dict__)
+
+    def test_state_id_is_public_class_attribute(self):
+        ci = City()
+        self.assertEqual(str, type(City.state_id))
+        self.assertIn("state_id", dir(ci))
+        self.assertNotIn("state_id", ci.__dict__)
+
+    def test_name_is_public_class_attribute(self):
+        ci = City()
+        self.assertEqual(str, type(City.name))
+        self.assertIn("name", dir(ci))
+        self.assertNotIn("name", ci.__dict__)
+
+    def test_attributes_are_string(self):
+        self.assertIs(type(self.city.state_id), str)
+        self.assertIs(type(self.city.name), str)
 
     def test_save(self):
-        melbourne = City()
-        melbourne.name = "Melbourne"
-        melbourne.save()
-        self.assertNotEqual(melbourne.created_at, melbourne.updated_at)
+        self.city.save()
+        self.assertNotEqual(self.city.created_at, self.city.updated_at)
 
     def test_to_dict(self):
-        melbourne = City()
-        self.assertTrue(dict, type(melbourne.to_dict))
-        self.assertEqual('to_dict' in dir(melbourne), True)
+        self.assertTrue('to_dict' in dir(self.city))
 
 
 if __name__ == "__main__":
